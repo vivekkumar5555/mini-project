@@ -12,8 +12,8 @@ function GetPost() {
   const fetchdata = async () => {
     try {
       const result = await axios.get("http://localhost:8080/api/post");
-      const resultData = result.data.getpost;
-      setStore(resultData);
+      console.log(result.data.posts);
+      setStore(result.data.posts);
       if (result.data && result.data.message) {
         // handleSuccess(result.data.message);
       }
@@ -32,12 +32,19 @@ function GetPost() {
 
   useEffect(() => {
     fetchdata();
-  });
+  },);
 
   const handleDelete = async (id) => {
+    console.log(id);
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/user/${id}`
+        `http://localhost:8080/api/post/${id}`
+     ,{
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response) {
         handleSuccess(response.data.message);
@@ -57,35 +64,37 @@ function GetPost() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-5 bg-gray-100">
       <ToastContainer />
       <AppPost />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
-        {store.map((stor, index) => (
-          <div
-            className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-md hover:shadow-lg transition-shadow duration-200"
-            key={index}
-          >
-            <h2 className="text-2xl font-bold text-amber-500 mb-2">
-              {stor.title}
-            </h2>
-            <p className="text-gray-700 mb-4">{stor.content}</p>
-            <div className="flex space-x-2">
-              <button
-                className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 transition-colors duration-200"
-                onClick={() => navigate(`/updatePost/${stor._id}`)}
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(stor._id)}
-                className="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 transition-colors duration-200"
-              >
-                Delete
-              </button>
+        {store.map((stor, index) => {
+          return (
+            <div
+              className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-md hover:shadow-lg transition-shadow duration-200"
+              key={index}
+            >
+              <h2 className="text-2xl font-bold text-amber-500 mb-2">
+                {stor.title}
+              </h2>
+              <p className="text-gray-700 mb-4">{stor.content}</p>
+              <div className="flex space-x-2">
+                <button
+                  className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 transition-colors duration-200"
+                  onClick={() => navigate(`/updatePost/${stor._id}`)}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(stor._id)}
+                  className="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 transition-colors duration-200"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -22,16 +22,12 @@ const userCreate = async (req, res) => {
     });
 
     const newUserCreated = await newUser.save();
-
-    const token = jwt.sign({ userId: newUser._id ,email:newUser.email}, "qwerty", {
-      expiresIn: "24h",
-    });
-
     res.status(201).json({
       message: "User Created Successfully",
       success: true,
       newUserCreated,
-      token,
+   
+
     });
   } catch (error) {
     res

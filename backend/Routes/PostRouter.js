@@ -8,17 +8,29 @@ const {
 const { deletepost, updatePost } = require("../Controllers/DeletePost");
 const userCreate = require("../Controllers/userCreate");
 const authMiddleware = require("../Middleware/auth");
+const loginController = require("../Controllers/Login");
 
 const router = express.Router();
 
-// User Routes
+//  Registeration
 router.post("/user", userCreate);
 
-// Post Routes
-router.post("/post", authMiddleware, CreatePost);
+// create post
+router.post("/post",authMiddleware, CreatePost);
 router.get("/post", getPost);
-router.get("/user/:id",getUserById);
-router.put("/post/:id",  updatePost);
-router.delete("/post/:id",  deletepost);
+router.get("/user/:id",authMiddleware,getUserById);
+router.put("/post/:id", authMiddleware,  updatePost);
+router.delete("/post/:id",authMiddleware,   deletepost);
+//login
+router.post("/login",loginController)
+//verfiycookie
+router.get('/verify-auth', authMiddleware, (req, res) => {
+  res.json({ 
+    success: true,
+    message: "Authenticated",
+    user: req.user 
+  });
+});
+
 
 module.exports = router;
